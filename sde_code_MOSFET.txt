@@ -1,0 +1,177 @@
+(sde:clear)
+
+; set coordinate system up direction 
+(sde:set-process-up-direction 1)
+; Doping Type
+(define DopSub "BoronActiveConcentration")
+(define DopSD  "ArsenicActiveConcentration")
+
+;----------------------------------------------------------------------
+; Changable pararmters in this project
+;----------------------------------------------------------------------
+;   - Substrate doping level
+(define SubDop  1e18 )   ; [1/cm3]
+
+; Setting parameters
+; - lateral
+(define Lg    @Lg@)               ; [um] Gate length/Channel length
+(define Lsp   0.1)                   ; [um] Spacer length (Spacer is omitted in this project to simplify)
+(define Ltot (+ Lg (* 2 Lsp) 0.4) )  ; [um] Lateral extend total 
+
+; - layers
+(define Hsub 1.0)   ; [um] Substrate thickness
+(define Thk  @Tox@) ; [um] Gate high-k oxide thickness
+(define Hmetal 0.05)   ; [um] Metal gate thickness
+;----------------------------------------------------------------------
+; End
+;----------------------------------------------------------------------
+
+;----------------------------------------------------------------------
+;   - pn junction resolution
+(define Gpn 0.002) ; [um]
+
+(define XjHalo 0.07)  ; [um] Halo depth
+(define XjExt  0.026) ; [um] Extension depth
+(define XjSD   0.12)  ; [um] SD Junction depth
+
+; Derived quantities
+(define Xmax (/ Ltot 2.0))
+(define Xg   (/ Lg   2.0))
+(define Xsp  (+ Xg   Lsp))
+
+(define Ysub Hsub)
+(define Yghk (* Thk -1.0))
+(define Ymetal (- Yghk Hmetal))
+
+(define Lcont (- Xmax Xsp))  
+
+;----------------------------------------------------------------------
+; Creating substrate region
+(sdegeo:create-rectangle 
+  (position    0.0  Ysub  0.0 ) 
+  (position    Xmax 0.0 0.0 ) 
+  "Silicon" "R.Substrate" 
+)
+
+; Creating gate dielectric
+(sdegeo:create-rectangle 
+  (position    0.0 0.0  0.0 ) 
+  (position    Xg Yghk 0.0 ) 
+  "HfO2" "R.Gatehk"
+)
+
+
+; Creating Metal gate
+(sdegeo:create-rectangle 
+  (position    0.0 Yghk 0.0 ) 
+  (position    Xg  Ymetal 0.0 ) 
+  "Tungsten" "R.Metalgate"
+)
+
+; Creating Source/Drain
+(sdegeo:create-rectangle 
+  (position    Xsp   0.0 0.0 ) 
+  (position    Xmax  Ymetal 0.0 ) 
+  "Titanium" "R.Metalgate"
+)
+
+;----------------------------------------------------------------------
+; Set Contacts (Source will be created when reflecting the structure)
+(sdegeo:set-contact (find-edge-id (position (* (+ Xmax Xsp)  0.5) Ymetal 0.0)) "drain")
+(sdegeo:set-contact (find-edge-id (position 5e-4 Ymetal 0.0)) "gate")
+
+;----------------------------------------------------------------------
+; Profiles:
+; - Substrate
+(sdedr:define-constant-profile "Const.Substrate" 
+ DopSub SubDop )
+(sdedr:define-constant-profile-region  "PlaceCD.Substrate" 
+ "Const.Substrate" "R.Substrate" )
+
+; - Source/Drain extensions 
+; -- base line definitions
+(sdedr:define-refeval-window "BaseLine.Ext" "Line"  
+ (position    Xg      0.0 0.0)  
+ (position (* Xmax 2.0) 0.0 0.0) )
+;   implant definition
+(sdedr:define-gaussian-profile "Impl.Extprof"
+ DopSD
+ "PeakPos" 0  "PeakVal" 1e19
+ "ValueAtDepth" SubDop "Depth" XjExt
+ "Gauss"  "Factor" 0.8
+)
+; -- implant placement
+(sdedr:define-analytical-profile-placement "Impl.Ext" 
+ "Impl.Extprof" "BaseLine.Ext" "Positive" "NoReplace" "Eval")
+
+; - Source/Drain implants
+; -- base line definitions
+(sdedr:define-refeval-window "BaseLine.SD" "Line"  
+ (position Xsp 0.0 0.0)  
+ (position (* Xmax 2.0) 0.0 0.0) )
+; -- implant definition
+(sdedr:define-gaussian-profile "Impl.SDprof"
+ DopSD 
+ "PeakPos" 0  "PeakVal" 1e20
+ "ValueAtDepth" SubDop "Depth" XjSD
+ "Gauss"  "Factor" 0.8
+)
+; -- implant placement
+(sdedr:define-analytical-profile-placement "Impl.SD" 
+ "Impl.SDprof" "BaseLine.SD" "Positive" "NoReplace" "Eval")
+
+;----------------------------------------------------------------------
+; Meshing Strategy:
+; Substrate
+(sdedr:define-refinement-size "Ref.Substrate" 
+  (/ Xmax 4.0)  (/ Hsub 8.0) 
+  Gpn            Gpn )
+(sdedr:define-refinement-function "Ref.Substrate" 
+ "DopingConcentration" "MaxTransDiff" 1)
+(sdedr:define-refinement-function "Ref.Substrate" 
+ "MaxLenInt" "Silicon" "Oxide" 0.001 2)
+(sdedr:define-refinement-region "RefPlace.Substrate" 
+ "Ref.Substrate" "R.Substrate" )
+
+; Active
+(sdedr:define-refeval-window "RWin.Act" 
+ "Rectangle"  
+ (position   0.0  0.0   0.0) 
+ (position  Xmax (* XjSD  1.5)    0.0) )
+(sdedr:define-refinement-size "Ref.SiAct" 
+  (/ Lcont 4.0) (/ XjSD 6.0) 
+  Gpn            Gpn )
+(sdedr:define-refinement-function "Ref.SiAct" 
+ "DopingConcentration" "MaxTransDiff" 1)
+(sdedr:define-refinement-placement "RefPlace.SiAct" 
+ "Ref.SiAct" "RWin.Act" )
+
+; Channel & Gate Oxides
+(sdedr:define-refeval-window "RWin.Cha" 
+ "Rectangle"  
+ (position   0.0  0.0   0.0) 
+ (position   Xg XjSD   0.0) )
+(sdedr:define-refinement-size "Ref.Cha" 
+  (/ Lcont 12.0) (/ XjSD 6.0) 
+  Gpn            Gpn )
+(sdedr:define-refinement-function "Ref.Cha" "MaxLenInt" "Silicon" "HfO2"   0.0002 1.5 "DoubleSide" )
+(sdedr:define-refinement-placement "RefPlace.Cha" 
+ "Ref.Cha" "RWin.Cha" )
+
+; vertical mesh size ferroelectric dielectric
+(sdedr:define-refinement-size "RED_b" (/ Lg 10.0) 0.001 0 (/ Lg 20.0) 0.001 0 )
+(sdedr:define-refinement-material "REP_b" "RED_b" "HfO2" )
+
+; Metal Interfaces
+(sdedr:define-refinement-size "RED_c" (/ Lg 10.0)  0.01 0 (/ Lg 20.0) 0.001 0 )
+(sdedr:define-refinement-material "REP_c" "RED_c" "Tungsten" )
+(sdedr:define-refinement-function "RED_c" "MaxLenInt" "Tungsten" "HfO2" 0.001 2)
+
+;----------------------------------------------------------------------
+; Build Mesh 
+(sde:build-mesh "snmesh" " " "n@node@_half_msh")
+;----------------------------------------------------------------------
+; Reflect device
+
+(system:command "tdx -mtt -x -ren drain=source n@node@_half_msh n@node@_msh")
+

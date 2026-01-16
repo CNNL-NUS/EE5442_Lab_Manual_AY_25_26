@@ -1,0 +1,8 @@
+Materials {
+HZO{
+code = 998
+label = "Ferroelectric material"
+group = Insulator
+color = #dfa955
+}
+}

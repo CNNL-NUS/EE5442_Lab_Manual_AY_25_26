@@ -1,0 +1,41 @@
+#define ParFileDir .
+
+Material="HZO" {
+  
+	#includeext "ParFileDir/sdevice_HfO2.par"
+
+* -----------------------------------------------------------------------
+* The part you need to change to fit the provided P-V loop
+ 	Epsilon
+ 	{ *  Ratio of the permittivities of material and vacuum
+
+  	* epsilon() = epsilon
+		epsilon	= 22
+ 	}
+
+	Epsilon_aniso
+	{ *  Ratio of the permittivities of material and vacuum
+
+	  * epsilon() = epsilon
+		epsilon	= 22
+	}
+
+	Polarization
+	{ * Remanent polarization P_r, saturation polarization P_s, and coercive field F_c for x,y,z direction (crystal axes)
+   	P_r = (2.0000e-05, 2.0000e-05, 2.0000e-05) #[C/cm^2]
+   	P_s = (2.0001e-05, 2.0001e-05, 2.0001e-05) #[C/cm^2]
+  	F_c = (1.5000e+06, 1.5000e+06, 1.5000e+06) #[V/cm]
+  
+	* Relaxation time for the auxiliary field tau_E, relaxation time for the polarization tau_P, nonlinear coupling kn.
+	* Set to zero in this simulation
+	tau_E = (0.0000e+00, 0.0000e+00, 0.0000e+00) #[s]
+	tau_P = (0.0000e+00, 0.0000e+00, 0.0000e+00) #[s]
+	kn = (0.0000e+00, 0.0000e+00, 0.0000e+00) #[cm*s/V]
+  	}
+* -----------------------------------------------------------------------
+}
+
+Material="Tungsten" {
+ 	#includeext "ParFileDir/sdevice_Tungsten.par"
+}
+

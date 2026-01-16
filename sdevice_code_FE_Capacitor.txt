@@ -1,0 +1,108 @@
+#-------------------------Device---------------------------------------------#
+Device MFM {
+File {
+	* Input files:
+	Grid    = "@tdr@"
+	Param	= "@parameter@"
+	
+	* Output files:
+	Plot	= "@tdrdat@"
+	Current	= "@plot@"
+}
+
+Electrode {
+   { Name="TopElectrode"    Voltage= 0.0 }
+   { Name="BottomElectrode"     Voltage= 0.0  }
+}
+
+Physics (region = "R.Ferro") {
+   Polarization
+}
+
+Plot{
+  eDensity hDensity
+  TotalCurrent/Vector eCurrent/Vector hCurrent/Vector
+  eMobility hMobility
+  eVelocity hVelocity
+  eQuasiFermi hQuasiFermi
+  eTemperature * Temperature  hTemperature
+  ElectricField/Vector Potential SpaceCharge
+  Doping DonorConcentration AcceptorConcentration
+  SRH Band2Band * Auger
+  AvalancheGeneration eAvalancheGeneration hAvalancheGeneration
+  eGradQuasiFermi/Vector hGradQuasiFermi/Vector
+  eEparallel hEparallel eENormal hENormal
+  BandGap 
+  BandGapNarrowing
+  Affinity
+  ConductionBand ValenceBand
+  eBarrierTunneling hBarrierTunneling * BarrierTunneling
+  eTrappedCharge  hTrappedCharge
+  eGapStatesRecombination hGapStatesRecombination
+  eDirectTunnel hDirectTunnel
+  Polarization/Vector
+}
+}
+#----------------------------------------------------------------------#
+
+Math {
+  Extrapolate
+  Notdamped= 50
+  Iterations= 50
+  Transient=BE
+  Method=Blocked
+  SubMethod=Super
+
+* Please uncomment if you have 4 CPUs or more
+  Number_Of_Threads= 4
+}
+
+File { 
+	Output	= "@log@"
+}
+
+System{
+  Vsource_pset vin (in 0) { 
+  pwl = ( 	
+  	* Prewrite
+  	0e+0		0
+  	1e-3		-2.5
+  	2e-3		0
+  	
+  	* Positive switching
+  	3e-3		0
+  	4e-3		2.5
+  	5e-3		0
+  	
+	* Negative swtiching
+  	6e-3		0
+  	7e-3		-2.5
+  	8e-3		0
+  	)
+  }
+
+  MFM MFM1 ( "TopElectrode"=in  "BottomElectrode"=0 )
+  
+  Plot "n@node@_sys_des.plt" (time() v(in) i(MFM1,0) )
+}
+
+
+Solve{  
+  NewCurrentPrefix="init"
+  Coupled(LineSearchDamping= 0.01) { Poisson }
+  Coupled{ Poisson Electron }
+  Coupled{ Poisson Electron Contact }
+  Coupled{ Poisson Electron Contact Circuit }
+
+  NewCurrentPrefix=""
+  Transient (
+     InitialTime= 0 FinalTime= 8e-3
+     InitialStep= 1e-6 Increment= 1.2
+     MaxStep= 1e-4 MinStep= 1e-11
+  ){ Coupled{ MFM1.poisson MFM1.electron MFM1.contact 
+              circuit }
+    CurrentPlot( Time=(Range=(3e-3 8e-3) Intervals= 500 ))
+  }
+}
+
+
