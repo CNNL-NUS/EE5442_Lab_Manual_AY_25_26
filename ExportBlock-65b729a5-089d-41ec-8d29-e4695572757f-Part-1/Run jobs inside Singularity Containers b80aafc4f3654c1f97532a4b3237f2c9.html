@@ -1,0 +1,738 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Run jobs inside Singularity Containers</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "SF Arabic", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "SF Arabic", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "SF Arabic", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "SF Arabic", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "SF Arabic", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="b80aafc4-f365-4c1f-9753-2a4b3237f2c9" class="page sans"><header><div class="page-header-icon undefined"><span class="icon">2️⃣</span></div><h1 class="page-title" dir="auto">Run jobs inside Singularity Containers</h1><p class="page-description" dir="auto"></p></header><div class="page-body"><div style="display:contents" dir="auto"><p id="5f86d24f-6438-4e97-ac29-77082b4f2581" class="">
+</p></div><div style="display:contents" dir="auto"><p id="fdc456bd-0614-4e9f-91b5-37c195c5b5f3" class="">The server is setup to run the Singularity Containers, giving flexibility to run software behind the environments configured specially for each. The example scripts are provided for reference in accessing such software on the HPC system. </p></div><div style="display:contents" dir="auto"><p id="eac82b71-5b93-4325-8ef1-6ea1f6c7a71f" class="">In the Labs the focus would be on using “nntools”, “umag”, “sentaurus”, “neurosim”.</p></div><div style="display:contents" dir="auto"><p id="9f4074c1-f854-4a5f-b53f-c23c9736f991" class="">
+</p></div><div style="display:contents" dir="auto"><ol type="1" id="a5381736-491e-40ff-81b7-5b00d0c85b1b" class="numbered-list" start="1"><li>A set of scripts have been developed on the cluster so that you may access these environments. They are found in this directory, where each directory has very specific environment setups<div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="d43ff70a-c44c-4ae5-aeef-7229c1561558" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">/apps/containers/scripts/</code></pre></div><div style="display:contents" dir="ltr"><table id="b4a2e84c-d605-4cb7-9661-68e979896f6f" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="086ab576-3581-4366-a75e-5b3b00b1cc0d"><th id="u^=N" class="block-color-gray_background simple-table-header" style="width:331.0039978027344px"><mark class="highlight-teal">Directory</mark></th><th id="hORW" class="block-color-gray_background simple-table-header" style="width:331.0039978027344px"><mark class="highlight-teal">Description</mark></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="adab7f52-d105-4797-a995-7adb419f856e"><td id="u^=N" class="" style="width:331.0039978027344px"><strong>nntools</strong></td><td id="hORW" class="" style="width:331.0039978027344px">Environments for running neural network frameworks in Python. Installed frameworks include <mark class="highlight-orange"><strong>PyTorch</strong></mark><mark class="highlight-orange"> </mark>and <mark class="highlight-orange"><strong>Tensorflow</strong></mark>. <br/>(<em>A text file in the directory lists more details about the frameworks available).</em></td></tr></div><div style="display:contents" dir="ltr"><tr id="77877ca9-ada4-4fad-9d3d-a53c5989ae51"><td id="u^=N" class="" style="width:331.0039978027344px"><strong>umag</strong></td><td id="hORW" class="" style="width:331.0039978027344px">Environments for running micromagnetic software tools. <br/>These are primarily <mark class="highlight-orange"><strong>OOMMF </strong></mark>and <mark class="highlight-orange"><strong>MuMax3</strong></mark>.</td></tr></div><div style="display:contents" dir="ltr"><tr id="e80fc88e-068e-40ff-a9f6-9cdbfe4fdeb8"><td id="u^=N" class="" style="width:331.0039978027344px"><strong>sentaurus</strong></td><td id="hORW" class="" style="width:331.0039978027344px">Environment for running commercial grade EDA software tools. <br/>These are software from <mark class="highlight-orange"><strong>Cadence</strong></mark><mark class="highlight-orange"> </mark>Design System, <mark class="highlight-orange"><strong>Synopsys</strong></mark>, <mark class="highlight-orange"><strong>Mentor Graphics</strong></mark>, <mark class="highlight-orange"><strong>Siemens </strong></mark>and <mark class="highlight-orange"><strong>Xilinx</strong></mark>.</td></tr></div><div style="display:contents" dir="ltr"><tr id="17f726ae-ecde-43dd-85c8-8665d75945c4"><td id="u^=N" class="" style="width:331.0039978027344px"><strong>neurosim</strong></td><td id="hORW" class="" style="width:331.0039978027344px">Environment for running <mark class="highlight-orange"><strong>neurosim</strong></mark>.</td></tr></div><div style="display:contents" dir="ltr"><tr id="fe511304-b195-4464-a20b-81f5679185c8"><td id="u^=N" class="" style="width:331.0039978027344px"><strong>visualization</strong></td><td id="hORW" class="" style="width:331.0039978027344px">Environment for running visualization software tools. In the simulation cluster, these are <mark class="highlight-orange"><strong>ParaView </strong></mark>and <mark class="highlight-orange"><strong>muview</strong></mark>.</td></tr></div><div style="display:contents" dir="ltr"><tr id="5fe89f99-db05-4200-ad3c-cc7348eb87a2"><td id="u^=N" class="" style="width:331.0039978027344px"><strong>openeda</strong></td><td id="hORW" class="" style="width:331.0039978027344px">Environment for running open source EDA software tools. <br/>These are part of the OpenEDA community, including tools such as <mark class="highlight-orange"><strong>magic</strong></mark>, <mark class="highlight-orange"><strong>netgen</strong></mark>, <mark class="highlight-orange"><strong>ngspice</strong></mark>, <mark class="highlight-orange"><strong>Xyce</strong></mark>, <mark class="highlight-orange"><strong>yosys</strong></mark>, etc.</td></tr></div></tbody></table></div></li></ol></div><div style="display:contents" dir="auto"><p id="6bcac6c7-c94f-4f3d-8694-2f059bfeda78" class="">
+</p></div><div style="display:contents" dir="auto"><ol type="1" id="1bc4a7b7-b264-46aa-809b-db09afa0ac0b" class="numbered-list" start="2"><li>To get a terminal inside the container environment, please run the corresponding script with the &quot;<strong>-shell</strong>&quot; switch. For example, running the nntools container using the following command. The table below lists the switches that can be used with the scripts<div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="d87107aa-6338-48e4-9278-092f04c0bbb7" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">/apps/containers/scripts/nntools/loadNNTools_Ub22.sh  -shell</code></pre></div><div style="display:contents" dir="ltr"><table id="ce4d6b1f-c040-42d1-a883-0f43d31b5e37" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="17ebc5eb-4ce8-4b4a-96d5-813ac24b24d9"><th id="{oDS" class="block-color-gray_background simple-table-header" style="width:331.0039978027344px"><mark class="highlight-teal">Switch</mark></th><th id="Q&gt;^t" class="block-color-gray_background simple-table-header" style="width:331.0039978027344px"><mark class="highlight-teal">Description</mark></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="16a0ae6c-66fd-4bea-9e3b-cfd3e9ed1649"><td id="{oDS" class="" style="width:331.0039978027344px"><strong>-shell</strong></td><td id="Q&gt;^t" class="" style="width:331.0039978027344px">Returns a terminal in the container environment</td></tr></div><div style="display:contents" dir="ltr"><tr id="1f2119ea-e896-4fd9-9a81-35497974ef40"><td id="{oDS" class="" style="width:331.0039978027344px"><strong>-nv</strong></td><td id="Q&gt;^t" class="" style="width:331.0039978027344px">Runs a script or command inside the container environment</td></tr></div><div style="display:contents" dir="ltr"><tr id="33d87655-0305-49d1-9271-1d387c41be73"><td id="{oDS" class="" style="width:331.0039978027344px"><strong>-exec</strong></td><td id="Q&gt;^t" class="" style="width:331.0039978027344px">Executes a command inside the container environment</td></tr></div></tbody></table></div></li></ol></div><div style="display:contents" dir="auto"><p id="ce9775f3-1084-4d33-9a57-0ec6df8e712b" class="">
+</p></div><div style="display:contents" dir="auto"><ol type="1" id="7710ed34-bea7-49f0-9e14-48ba144f9650" class="numbered-list" start="3"><li>Additional switches are needed to set up the environment to use an available GPU accelerator device Nvidia or AMD Instinct. At this time, Nvidia and AMD Instinct GPUs cannot be used concurrently. The table below lists the additional switches that can be used.<div style="display:contents" dir="ltr"><table id="3277e9d6-b024-47d7-b2b5-b4ab1ee87415" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="29308d50-f84b-4601-8e7f-98e01404a2a0"><th id="VC?Z" class="block-color-gray_background simple-table-header" style="width:331.0039978027344px"><mark class="highlight-teal">Additional Switch</mark></th><th id="XUQj" class="block-color-gray_background simple-table-header" style="width:331.0039978027344px"><mark class="highlight-teal">Description</mark></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="1345afe2-dffa-42dd-a8a0-f1944b709690"><td id="VC?Z" class="" style="width:331.0039978027344px"><strong>--nv</strong></td><td id="XUQj" class="" style="width:331.0039978027344px">Sets up environment to use an Nvidia GPU</td></tr></div><div style="display:contents" dir="ltr"><tr id="85ae711a-17b7-415d-839e-540b7ba9bdb5"><td id="VC?Z" class="" style="width:331.0039978027344px"><strong>--amd </strong></td><td id="XUQj" class="" style="width:331.0039978027344px">Sets up environment to use an AMD Instinct GPU</td></tr></div></tbody></table></div></li></ol></div><div style="display:contents" dir="auto"><h1 id="9c3cefd7-2799-4775-bfbf-51c648ada5c4" class="">Submit multiple jobs with shell script</h1></div><div style="display:contents" dir="auto"><ol type="1" id="6b0a11a5-86ee-4bf4-a49a-45bb23c71a03" class="numbered-list" start="1"><li>The above are commands to have interactive setup for the container and software access. The further commands or scripts are non interactive commands of OpenPBS, which can be utilized by running them on a shell script file. The code snips shown below are for your understanding, please use the shell files given at the end.<br/><br/>For the script that is submitted to run a program inside a Singularity container, a wrapper script is needed. An example of a wrapper script is the following:<div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="690acc95-b27b-4c32-8844-5e7503a70165" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">#!/bin/bash
+.  /etc/profile
+module load local pytorch/py3/2.2.0 
+cd /working_dir &amp;&amp; \
+python3  /python_script_filename.py</code></pre></div><div style="display:contents" dir="auto"><p id="38149226-c5a8-41ec-979f-8a62390bf5d1" class=""><em><mark class="highlight-orange">(working_dir is the current project or script directory, for example it will be in the allotted “imem0XX” for each student). </mark></em></p></div><div style="display:contents" dir="auto"><p id="3122e5d3-9231-4aff-a836-539885268aeb" class="">This script can be saved as wrapper.sh shell file  which will be called by the submit.sh, the submit script is given below. <span style="border-bottom:0.05em solid">Here please updated the name of the server you want your python script to run on.</span></p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="0ad7008e-5cde-4622-ae85-63e4c15e3ef5" class="code code-wrap"><code class="language-Shell" style="white-space:pre-wrap;word-break:break-all">
+#!/bin/bash
+#PBS -j oe
+#PBS -l vnode=Server_Name
+#PBS -l walltime=24:00:00
+#PBS -l cudamem=500mb
+#PBS -l ncpus=4
+#PBS -l mem=4gb
+
+.  /etc/profile
+module load local singularity
+cd /working_dir
+/apps/containers/scripts/nntools/loadNNTools_Ub22.sh -run --nv  /path_to_wrapper.sh</code></pre></div></li></ol></div><div style="display:contents" dir="auto"><p id="471be34c-838a-410f-a4f6-e2b43418cc20" class=""><em><mark class="highlight-orange">(Here nntools container is utilized to access the softwares related to the Neural Networks).</mark></em></p></div><div style="display:contents" dir="auto"><p id="562e2c53-01c0-4dbb-bc51-a05195ea73a5" class="">
+</p></div><div style="display:contents" dir="auto"><p id="48f8adaa-fa93-432b-be94-0d7dcd33e872" class="">
+</p></div><div style="display:contents" dir="auto"><ol type="1" id="f957baa5-dc73-402d-830b-5eb2eedc7ffd" class="numbered-list" start="2"><li>The script the files can be downloaded here.</li></ol></div><div style="display:contents" dir="ltr"><figure class="block-color-blue callout" style="white-space:pre-wrap;display:flex" id="17a3d192-8c64-8009-af1f-e4231991326a"><div style="font-size:1.5em"><img class="icon notion-static-icon" src="https://www.notion.so/icons/downward_blue.svg"/></div><div style="width:100%"><div style="display:contents" dir="ltr"><figure id="17c3d192-8c64-8006-835d-f1e4785b32a6"><div class="source"><a href="submit.sh">submit.sh</a></div></figure></div><div style="display:contents" dir="ltr"><figure id="17c3d192-8c64-809b-b196-d4cd8c0853e1"><div class="source"><a href="wrapper.sh">wrapper.sh</a></div></figure></div></div></figure></div><div style="display:contents" dir="auto"><p id="10936daf-234b-4b39-bbd4-9b9a1499b7cb" class="">
+</p></div><div style="display:contents" dir="auto"><ol type="1" id="896bf6fa-d895-43d5-a1d6-806e2996fce2" class="numbered-list" start="3"><li>Additional OpenPBS Commands, which can be referred while working on the HPC<div style="display:contents" dir="ltr"><figure id="e3e705b7-281b-4937-a07a-128edf4c7b7a" class="block-color-blue link-to-page"><a href="OpenPBS%20Commands%20e3e705b7281b4937a07a128edf4c7b7a.html"><span class="icon">🖱️</span>OpenPBS Commands</a></figure></div></li></ol></div><div style="display:contents" dir="auto"><p id="10141b54-bc2b-4bff-b873-2d8a9d6abb0a" class="">
+</p></div><div style="display:contents" dir="auto"><p id="17c3d192-8c64-80c4-a046-e52dc385c221" class="">
+</p></div></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>

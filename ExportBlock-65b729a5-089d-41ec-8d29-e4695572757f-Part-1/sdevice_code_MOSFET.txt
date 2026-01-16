@@ -1,0 +1,109 @@
+#define  _Vgmin   -1
+#define  _Vgmax  1
+#define _VdLin 0.1
+#define _VdSat 1
+#define _CAR_ electron hole
+
+Electrode {
+   { name="gate"      	  Voltage= 0.0}
+   { name="drain"      	  Voltage= 0.0}
+   { name="source"        Voltage= 0.0}
+}
+
+
+File {
+   Grid      = "@tdr@"
+   Plot      = "@tdrdat@"
+   Parameter = "@parameter@"
+   Current   = "@plot@"
+   Output    = "@log@"
+}
+
+
+Physics ( Material = "Silicon" ) 
+{
+    Fermi
+    Mobility(
+    	HighFieldSaturation( EparallelToInterface )
+    	Enormal
+    )
+   Recombination ( SRH(DopingDependence) )
+}
+
+Plot{
+  eDensity hDensity
+  TotalCurrent/Vector eCurrent/Vector hCurrent/Vector
+  eMobility hMobility
+  eVelocity hVelocity
+  eQuasiFermi hQuasiFermi
+  eTemperature * Temperature  hTemperature
+  ElectricField/Vector Potential SpaceCharge
+  Doping DonorConcentration AcceptorConcentration
+  SRH Band2Band * Auger
+  AvalancheGeneration eAvalancheGeneration hAvalancheGeneration
+  eGradQuasiFermi/Vector hGradQuasiFermi/Vector
+  eEparallel hEparallel eENormal hENormal
+  BandGap 
+  BandGapNarrowing
+  Affinity
+  ConductionBand ValenceBand
+  eBarrierTunneling hBarrierTunneling * BarrierTunneling
+  eTrappedCharge  hTrappedCharge
+  eInterfaceTrappedCharge hInterfaceTrappedCharge
+  eGapStatesRecombination hGapStatesRecombination
+  eDirectTunnel hDirectTunnel
+}
+
+Math {
+  Extrapolate
+  Notdamped= 50
+  Iterations= 20
+  NumberofThreads= 4
+}
+
+Solve {
+  Coupled ( Iterations= 100 LineSearchDamping= 1e-8 ){ Poisson }
+  Coupled ( Iterations= 100 LineSearchDamping= 1e-8 ){ Poisson _CAR_ }
+  
+  Quasistationary(
+    DoZero
+    InitialStep= 1e-3 Increment= 1.5 
+    MinStep= 1e-9 MaxStep= 0.025
+    Goal { Name= "gate"  Voltage= _Vgmin}
+    Goal { Name= "drain"  Voltage= _VdLin }
+  ){ Coupled { Poisson _CAR_ } }
+  Save ( FilePrefix= "n@node@_VdLin" )
+
+  Quasistationary(
+    InitialStep= 1e-3 Increment= 1.5 
+    MinStep= 1e-9 MaxStep= 0.025
+    Goal { Name= "drain"  Voltage= _VdSat }
+  ){ Coupled { Poisson _CAR_ } }
+  Save ( FilePrefix= "n@node@_VdSat" )
+
+#-- Vg sweep for Vd = VdLin
+  NewCurrentFile= "IdVg_VdLin_" 
+  Load ( FilePrefix= "n@node@_VdLin" )
+
+  Quasistationary( 
+    DoZero 
+    InitialStep= 1e-3 Increment= 1.35 
+    MinStep= 1e-9 MaxStep= 0.025
+    Goal { Name= "gate" Voltage= _Vgmax }
+  ){ Coupled { Poisson _CAR_ } 
+      CurrentPlot (Time=(Range=(0 1) Intervals=100))
+    }
+
+#-- Vg sweep for Vd = VdSat
+  NewCurrentFile= "IdVg_VdSat_" 
+  Load ( FilePrefix= "n@node@_VdSat" )
+
+  Quasistationary( 
+    DoZero 
+    InitialStep= 1e-3 Increment= 1.35 
+    MinStep= 1e-9 MaxStep= 0.025
+    Goal { Name= "gate" Voltage= _Vgmax }
+  ){ Coupled { Poisson _CAR_ } 
+      CurrentPlot (Time=(Range=(0 1) Intervals=100))
+    }
+}
