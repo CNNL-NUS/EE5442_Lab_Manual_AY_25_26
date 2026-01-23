@@ -716,14 +716,14 @@ L := 500e-9
 W := 500e-9
 H := 3e-9
 
-Nx := 64
-Ny := 64
-Nz := 1
+Nx := 5e-9
+Ny := 5e-9
+Nz := 1e-9
 
 // setgridsize(Nx, Ny, Nz)
-// etcellsize(L/Nx, W/Ny, H/Nz)
+// setcellsize(L/Nx, W/Ny, H/Nz)
 
-setgridsize(L/Nx, W/Ny, H/Nz)
+setgridsize(ceil(L/Nx), ceil(W/Ny), ceil(H/Nz))
 setcellsize(Nx, Ny, Nz)
 
 a :=imageshape(&quot;shape.png&quot;)     // Import image
