@@ -726,7 +726,7 @@ Nz := 1e-9
 setgridsize(ceil(L/Nx), ceil(W/Ny), ceil(H/Nz))
 setcellsize(Nx, Ny, Nz)
 
-a :=imageshape(&quot;shape.png&quot;)     // Import image
+a :=imageshape(&quot;shape.png&quot;).Inverse()     // Import image
 setgeom(a)
 saveas(geom, &quot;geo&quot;)
 
