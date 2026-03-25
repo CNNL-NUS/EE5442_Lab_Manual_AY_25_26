@@ -143,19 +143,16 @@ img {
 
 .column-list {
 	display: flex;
-	justify-content: space-between;
+	gap: 46px;
 }
 
 .column {
-	padding: 0 1em;
+	min-width: 0;
+	overflow: hidden;
 }
 
-.column:first-child {
-	padding-left: 0;
-}
-
-.column:last-child {
-	padding-right: 0;
+.column > *:first-child {
+	margin-top: 0;
 }
 
 .table_of_contents-item {
@@ -728,7 +725,7 @@ swb</code></pre></div></li></ul></div><div style="display:contents" dir="auto"><
 </p></div><div style="display:contents" dir="auto"><h1 id="19b3d192-8c64-80fd-add3-f81ba4838293" class=""> 6. <strong>Run SDE node</strong>   </h1></div><div style="display:contents" dir="ltr"><figure id="19b3d192-8c64-800c-8168-ecbe6b918c0c" class="image"><a href="image%2021.png"><img style="width:672px" src="image%2021.png"/></a></figure></div><div style="display:contents" dir="auto"><p id="19b3d192-8c64-80df-a7cb-d9195e4df856" class="">
 </p></div><div style="display:contents" dir="auto"><h1 id="19b3d192-8c64-803e-86ed-dc22a37c2268" class=""> 7. <strong>Visualize device structure</strong>   </h1></div><div style="display:contents" dir="ltr"><figure id="19b3d192-8c64-805f-9993-ed2de1ee0521" class="image"><a href="image%2022.png"><img style="width:709.984375px" src="image%2022.png"/></a></figure></div><div style="display:contents" dir="auto"><p id="19b3d192-8c64-80c3-b049-c2f185972e33" class="">
 </p></div><div style="display:contents" dir="ltr"><figure id="19b3d192-8c64-8063-a981-d0a5d3058875" class="image"><a href="image%2023.png"><img style="width:709.96875px" src="image%2023.png"/></a></figure></div><div style="display:contents" dir="ltr"><figure id="19b3d192-8c64-8006-bf56-f6d19e3d630d" class="image"><a href="image%2024.png"><img style="width:672px" src="image%2024.png"/></a></figure></div><div style="display:contents" dir="auto"><h1 id="19b3d192-8c64-80e2-b014-f07e5fbfec8f" class=""><strong>8. Add SDEVICE tool for electrical performance simulation</strong>   </h1></div><div style="display:contents" dir="ltr"><figure id="19b3d192-8c64-804c-8c85-c87059728f89" class="image"><a href="image%2025.png"><img style="width:672px" src="image%2025.png"/></a></figure></div><div style="display:contents" dir="auto"><p id="19b3d192-8c64-80eb-b1c6-c576cf99f026" class="">
-</p></div><div style="display:contents" dir="ltr"><figure id="19b3d192-8c64-8096-be40-fa4ac5ca6275" class="image"><a href="image%2026.png"><img style="width:590px" src="image%2026.png"/></a></figure></div><div style="display:contents" dir="auto"><p id="19b3d192-8c64-80b5-9d9d-cd717b425a7e" class="">
+</p></div><div style="display:contents" dir="ltr"><figure id="19b3d192-8c64-8096-be40-fa4ac5ca6275" class="image"><a href="image%2026.png"><img style="width:590.0000610351562px" src="image%2026.png"/></a></figure></div><div style="display:contents" dir="auto"><p id="19b3d192-8c64-80b5-9d9d-cd717b425a7e" class="">
 </p></div><div style="display:contents" dir="ltr"><figure id="19b3d192-8c64-80eb-bb0d-fd2b4da88ed8" class="image"><a href="image%2027.png"><img style="width:576px" src="image%2027.png"/></a></figure></div><div style="display:contents" dir="auto"><p id="19b3d192-8c64-80b4-8aa2-d633913cbb20" class="">
 </p></div><div style="display:contents" dir="ltr"><figure id="19b3d192-8c64-80e7-8641-ee717fe804f1" class="image"><a href="image%2028.png"><img style="width:576px" src="image%2028.png"/></a></figure></div><div style="display:contents" dir="auto"><p id="19b3d192-8c64-8050-9c84-f940eb69f62c" class="">
 </p></div><div style="display:contents" dir="ltr"><figure id="19b3d192-8c64-80ee-b0c0-e3b980fa8154" class="image"><a href="image%2029.png"><img style="width:576px" src="image%2029.png"/></a></figure></div><div style="display:contents" dir="auto"><p id="19b3d192-8c64-8088-8903-d84ab19c8d70" class="">
@@ -740,7 +737,7 @@ swb</code></pre></div></li></ul></div><div style="display:contents" dir="auto"><
 </p></div><div style="display:contents" dir="ltr"><figure id="19b3d192-8c64-80b5-8cfb-e478773c71cc" class="image"><a href="image%2034.png"><img style="width:672px" src="image%2034.png"/></a></figure></div><div style="display:contents" dir="auto"><p id="19b3d192-8c64-80ed-8fda-cd1b779f9d16" class="">
 </p></div><div style="display:contents" dir="ltr"><figure id="19b3d192-8c64-807c-9a64-dbe5e4b0e034" class="image"><a href="image%2035.png"><img style="width:672px" src="image%2035.png"/></a></figure></div><div style="display:contents" dir="auto"><p id="19b3d192-8c64-80be-8697-fefe3ad1706e" class="">
 </p></div><div style="display:contents" dir="ltr"><figure id="19b3d192-8c64-8010-bcf6-dd9d15476b17" class="image"><a href="image%2036.png"><img style="width:672px" src="image%2036.png"/></a></figure></div><div style="display:contents" dir="auto"><p id="19b3d192-8c64-80bc-80b2-d2d1e3279b70" class="">
-</p></div><div style="display:contents" dir="auto"><h1 id="19b3d192-8c64-80d9-aec7-c90148f91bbb" class=""><strong>11. Run SDEVICE tool</strong>   </h1></div><div style="display:contents" dir="ltr"><figure id="19b3d192-8c64-8091-b051-c0c5851da1ba" class="image"><a href="image%2037.png"><img style="width:686px" src="image%2037.png"/></a></figure></div><div style="display:contents" dir="auto"><p id="19b3d192-8c64-800a-8c08-cb8ebbb4f12f" class="">
+</p></div><div style="display:contents" dir="auto"><h1 id="19b3d192-8c64-80d9-aec7-c90148f91bbb" class=""><strong>11. Run SDEVICE tool</strong>   </h1></div><div style="display:contents" dir="ltr"><figure id="19b3d192-8c64-8091-b051-c0c5851da1ba" class="image"><a href="image%2037.png"><img style="width:686.0000610351562px" src="image%2037.png"/></a></figure></div><div style="display:contents" dir="auto"><p id="19b3d192-8c64-800a-8c08-cb8ebbb4f12f" class="">
 </p></div><div style="display:contents" dir="auto"><p id="19b3d192-8c64-8045-9735-d2471c61fd4c" class="">
 </p></div><div style="display:contents" dir="auto"><h1 id="19b3d192-8c64-803a-8176-e1b92751f1b5" class=""><strong>12. Check error message</strong>   </h1></div><div style="display:contents" dir="auto"><p id="19b3d192-8c64-80ef-8523-ed935149a463" class="">
 </p></div><div style="display:contents" dir="ltr"><figure id="19b3d192-8c64-8097-91a3-ecd420ce791e" class="image"><a href="image%2038.png"><img style="width:672px" src="image%2038.png"/></a></figure></div><div style="display:contents" dir="auto"><p id="19b3d192-8c64-80b4-b92a-cd053ed63613" class="">

@@ -143,19 +143,16 @@ img {
 
 .column-list {
 	display: flex;
-	justify-content: space-between;
+	gap: 46px;
 }
 
 .column {
-	padding: 0 1em;
+	min-width: 0;
+	overflow: hidden;
 }
 
-.column:first-child {
-	padding-left: 0;
-}
-
-.column:last-child {
-	padding-right: 0;
+.column > *:first-child {
+	margin-top: 0;
 }
 
 .table_of_contents-item {
@@ -711,7 +708,7 @@ blockquote.quote-large {
 }
 	
 </style></head><body><article id="00615013-d912-47fd-8939-e63d6aa5e4d4" class="page sans"><header><div class="page-header-icon undefined"><img class="icon notion-static-icon" src="https://www.notion.so/icons/science_yellow.svg"/></div><h1 class="page-title" dir="auto">Lab 3 (Week 10, 11)</h1><p class="page-description" dir="auto"></p></header><div class="page-body"><div style="display:contents" dir="auto"><hr id="e1fce624-628a-4cae-9853-049287b95943"/></div><div style="display:contents" dir="auto"><h2 id="2ea3d192-8c64-801d-bc7e-f5eba700ee15" class="">Week 10</h2></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="572312a6-afe6-4938-aa29-4583845a06e3"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%"><strong>This lab session focuses on familiarizing with Neural Networks and their inner dynamics, with implementation on the Python platform. </strong></div></figure></div><div style="display:contents" dir="auto"><p id="52152131-ffb8-4eb0-8a5d-2de2c2270edf" class="">
-</p></div><div style="display:contents" dir="ltr"><figure id="bfce1fc8-3b21-4a7c-9881-5e7b9e67d272" class="block-color-teal link-to-page"><a href="HPC%20Access%20bfce1fc83b214a7c98815e7b9e67d272.html"><span class="icon">1️⃣</span>HPC Access</a></figure></div><div style="display:contents" dir="ltr"><figure id="b80aafc4-f365-4c1f-9753-2a4b3237f2c9" class="block-color-teal link-to-page"><a href="Run%20jobs%20inside%20Singularity%20Containers%20b80aafc4f3654c1f97532a4b3237f2c9.html"><span class="icon">2️⃣</span>Run jobs inside Singularity Containers</a></figure></div><div style="display:contents" dir="ltr"><figure id="b38eba14-c79f-4427-8936-53bf02cacb3e" class="block-color-teal link-to-page"><a href="Run%20Python%20Script%20b38eba14c79f4427893653bf02cacb3e.html"><span class="icon">3️⃣</span>Run Python Script</a></figure></div><div style="display:contents" dir="ltr"><figure id="7d9a6975-f78c-4951-8109-8215f84d661a" class="block-color-teal link-to-page"><a href="Pytorch%20&amp;%20Neural%20Networks%207d9a6975f78c495181098215f84d661a.html"><span class="icon">4️⃣</span>Pytorch &amp; Neural Networks</a></figure></div><div style="display:contents" dir="auto"><p id="aab53c0e-a6b6-4401-af47-82e8f0c2b253" class="">
+</p></div><div style="display:contents" dir="ltr"><figure id="bfce1fc8-3b21-4a7c-9881-5e7b9e67d272" class="block-color-teal link-to-page"><a href="HPC%20Access%20bfce1fc83b214a7c98815e7b9e67d272.html"><span class="icon">1️⃣</span>HPC Access</a></figure></div><div style="display:contents" dir="ltr"><figure id="b38eba14-c79f-4427-8936-53bf02cacb3e" class="block-color-teal link-to-page"><a href="Run%20Python%20Script%20b38eba14c79f4427893653bf02cacb3e.html"><span class="icon">2️⃣</span>Run Python Script</a></figure></div><div style="display:contents" dir="ltr"><figure id="7d9a6975-f78c-4951-8109-8215f84d661a" class="block-color-teal link-to-page"><a href="Pytorch%20&amp;%20Neural%20Networks%207d9a6975f78c495181098215f84d661a.html"><span class="icon">3️⃣</span>Pytorch &amp; Neural Networks</a></figure></div><div style="display:contents" dir="auto"><p id="aab53c0e-a6b6-4401-af47-82e8f0c2b253" class="">
 </p></div><div style="display:contents" dir="auto"><hr id="9efc5980-2dcc-4a1c-937c-75e3cf5271b1"/></div><div style="display:contents" dir="auto"><h2 id="2ea3d192-8c64-8074-b09e-c35b9dbd97fe" class="">Week 11</h2></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="2ea3d192-8c64-803b-8d3e-e1ed53ff0726"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%"><strong>This lab session focuses on emulating Neural Networks on embedded hardware. With the assistance of NeuroSim to understand system technology co-optimization, performance and energy analysis.</strong></div></figure></div><div style="display:contents" dir="auto"><p id="2ea3d192-8c64-808a-967c-f8d1c2941e94" class="">
 </p></div><div style="display:contents" dir="auto"><p id="2ea3d192-8c64-80f7-b6f8-e5e9a3b37213" class=""><strong><span style="border-bottom:0.05em solid">NeuroSim</span></strong>: GitHub opensource page can be accessed here.</p></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="2ea3d192-8c64-8052-9a1a-de313b53a5df"><div style="width:100%"><div style="display:contents" dir="auto"><ol type="1" id="2ea3d192-8c64-807d-a947-e6f8d8c654a4" class="numbered-list" start="1"><li><mark class="highlight-blue"><strong><a href="https://github.com/neurosim/DNN_NeuroSim_V2.1">https://github.com/neurosim/DNN_NeuroSim_V2.1</a></strong></mark></li></ol></div></div></figure></div><div style="display:contents" dir="auto"><p id="2ea3d192-8c64-80e3-a659-f9f741301d2e" class="">
 </p></div><div style="display:contents" dir="ltr"><figure id="2ea3d192-8c64-8060-84fd-e2fd5b308b96" class="block-color-teal link-to-page"><a href="Introduction%20Neurosim%202ea3d1928c64806084fde2fd5b308b96.html"><span class="icon">1️⃣</span>Introduction Neurosim</a></figure></div><div style="display:contents" dir="ltr"><figure id="2ea3d192-8c64-8052-a097-ea038fd5a554" class="block-color-teal link-to-page"><a href="NeuroSim%20access%20on%20HPC%202ea3d1928c648052a097ea038fd5a554.html"><span class="icon">2️⃣</span>NeuroSim access on HPC</a></figure></div><div style="display:contents" dir="auto"><hr id="2ea3d192-8c64-8004-abe4-ea89dd4f7134"/></div><div style="display:contents" dir="auto"><h1 id="17a3d192-8c64-80e4-817b-c739ffae0394" class="">Assignment / Task</h1></div><div style="display:contents" dir="auto"><p id="17a3d192-8c64-8050-abef-d1ee1b2c105b" class="">For the Lab 1 assignment / task please visit the course page, Assignments folder on <mark class="highlight-blue"><strong><a href="https://www.nus.edu.sg/canvas/login/">Canvas-NUS</a></strong></mark><mark class="highlight-default">.</mark></p></div><div style="display:contents" dir="auto"><p id="17c3d192-8c64-8083-bbc2-c48528e218bb" class="">
