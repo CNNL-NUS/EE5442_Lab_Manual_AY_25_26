@@ -126,10 +126,35 @@ img {
 		max-height: 100vh;
 		object-fit: contain;
 	}
+
+	table.collection-content {
+		width: 100%;
+		table-layout: fixed;
+	}
+
+	table.collection-content th,
+	table.collection-content td {
+		overflow-wrap: anywhere;
+	}
+
+	table.collection-content td > .user,
+	table.collection-content td > time {
+		white-space: pre-wrap;
+	}
 }
 
 @page {
 	margin: 1in;
+}
+
+.collection-content-wrapper {
+	overflow-x: auto;
+}
+
+@media only print {
+	.collection-content-wrapper {
+		overflow-x: visible;
+	}
 }
 
 .collection-content {
@@ -711,7 +736,7 @@ blockquote.quote-large {
 </p></div><div style="display:contents" dir="auto"><p id="4c15481d-a9ac-48ee-8f38-366a7f2aab46" class="">A walkthrough to run a simple python script to get familiarized with the container and editor. Here an interactive terminal based commands are utilized. </p></div><div style="display:contents" dir="auto"><p id="93db881c-edc8-4c16-a78a-549485b3d09a" class="">
 </p></div><div style="display:contents" dir="auto"><ol type="1" id="c259ba12-2b9f-4c2c-bc10-00393e2becd4" class="numbered-list" start="1"><li>Login to the HPC server from MobaXterm with the given credentials. If outside NUS please utilize the nVPN softwares to connect. <mark class="highlight-red"><a href="Credentials%20HPC%2054e575316aa7436e960e2403eade0eb8.html">HPC Access</a></mark> page can be used for reference. </li></ol></div><div style="display:contents" dir="auto"><p id="8dc9782d-57ca-4963-a698-25cc083e50c6" class="">
 </p></div><div style="display:contents" dir="auto"><ol type="1" id="0fe491bc-138c-4b43-91a9-521a0242c127" class="numbered-list" start="2"><li>After establishing your SSH session with either Feynman or Schrodinger, run the following command to get a terminal in one of the other compute servers. It will allot you a compute node based on the resources available.<div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2a448a52-d298-4afa-84ca-2c96720d656f" class="code code-wrap"><code class="language-Go" style="white-space:pre-wrap;word-break:break-all">srun --pty --nodelist=boltzmann01 --cpus-per-task=8 --mem=8G --gres=cudamem:512 --time=4:00:00 bash</code></pre></div></li></ol></div><div style="display:contents" dir="auto"><p id="cdeb3c3b-dec0-4036-a56f-847ff56a6fec" class="">
-</p></div><div style="display:contents" dir="auto"><ol type="1" id="f46ddb97-5d0b-40f3-a7da-5606cfb09c8c" class="numbered-list" start="3"><li>Select the container to run, one for the workstation and the later is for the server cluster and to run on interactive shell (-shell) is used. For the Nvidia drivers (--nv) is utilized.<div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="bc85a2fc-6ecb-4515-8280-0f0d31cdb179" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">/apps/containers/scripts/nntools/loadNNTools_Ub22.sh -shell --nv
+</p></div><div style="display:contents" dir="auto"><ol type="1" id="f46ddb97-5d0b-40f3-a7da-5606cfb09c8c" class="numbered-list" start="3"><li>Select the container to run, one for the server cluster and the later is for the workstation and to run on interactive shell (-shell) is used. For the Nvidia drivers (--nv) is utilized.<div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="bc85a2fc-6ecb-4515-8280-0f0d31cdb179" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">/apps/containers/scripts/nntools/loadNNTools_Ub22.sh -shell --nv
 
 OR
 
